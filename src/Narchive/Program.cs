@@ -7,6 +7,7 @@ namespace Narchive
         ThrowOnUnexpectedArgument = false)]
     [Subcommand("create", typeof(CreateCommand))]
     [Subcommand("extract", typeof(ExtractCommand))]
+    [Subcommand("specific", typeof(SpecificCommand))]
     [HelpOption("-? | -h | --help",
         Description = "Show help information.")]
     class Program
