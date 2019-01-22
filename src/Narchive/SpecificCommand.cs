@@ -31,6 +31,24 @@ namespace Narchive
         [Option("-nf | --nofilenames", "Specifies the entries in the NARC archive will not have filenames.", CommandOptionType.NoValue)]
         public bool NoFilenames { get; set; }
 
+
+        private string getFakePath(string _passedPath){
+        	int _possibleIndex = _passedPath.IndexOf(':');
+        	if (_possibleIndex==-1){
+        		return _passedPath;
+        	}else{
+        		return _passedPath.Substring(_possibleIndex+1);
+        	}
+        }
+        private string getRealPath(string _passedPath){
+        	int _possibleIndex = _passedPath.IndexOf(':');
+        	if (_possibleIndex==-1){
+        		return _passedPath;
+        	}else{
+        		return _passedPath.Substring(0,_possibleIndex);
+        	}
+        }
+
         private int OnExecute(IConsole console)
         {
             var reporter = new ConsoleReporter(console);
@@ -52,14 +70,21 @@ namespace Narchive
                 for (int i=0;i<InputFiles.Length;++i){
                     narcObjects.Add(new NarcArchiveFileEntry
                         {
-                            Name = Path.GetFileName(InputFiles[i]),
-                            Path = InputFiles[i],
+                            Name = Path.GetFileName(getFakePath(InputFiles[i])),
+                            Path = getRealPath(InputFiles[i]),
                             Directory = null,
                         });
                 }
                 // Add missing directories and assign parents. Skip base directory.
                 for (int i=1;i<narcObjects.Count;++i){
-                    string _cachedParent = Path.GetDirectoryName(narcObjects[i].Path);
+                    string _cachedParent;
+
+                    if (i<InputFiles.Length+1){ // Use fake paths if it's a passed file
+                    	_cachedParent = Path.GetDirectoryName(getFakePath(InputFiles[i-1]));
+                    }else{
+                    	_cachedParent = Path.GetDirectoryName(narcObjects[i].Path);
+                    }
+
                     NarcArchiveDirectoryEntry _possibleParent = (NarcArchiveDirectoryEntry)narcObjects.FirstOrDefault(o => o.Path == _cachedParent);
                     if (_possibleParent==null){
                         _possibleParent = new NarcArchiveDirectoryEntry
@@ -81,8 +106,7 @@ namespace Narchive
                     }
                 }
 
-                NarcArchiveRootDirectoryEntry _passRoot = (NarcArchiveRootDirectoryEntry)narcObjects[0];
-                NarcArchive.Create((NarcArchiveRootDirectoryEntry)_passRoot,OutputPath,!NoFilenames);
+                NarcArchive.Create((NarcArchiveRootDirectoryEntry)narcObjects[0],OutputPath,!NoFilenames);
                 return 0;
             }
             catch (Exception e)
