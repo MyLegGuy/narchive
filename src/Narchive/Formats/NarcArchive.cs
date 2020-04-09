@@ -202,7 +202,7 @@ namespace Narchive.Formats
             }
         }
 
-        public static void Extract(string inputPath, string outputPath, bool ignoreFilenames = false)
+        public static void Extract(string inputPath, string outputPath, bool ignoreFilenames = false, bool _justPrintNames = false)
         {
             using (var input = new FileStream(inputPath, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(input))
@@ -321,6 +321,10 @@ namespace Narchive.Formats
                             var directoryEntry = directoryEntries[entryDirectoryIndex];
 
                             directoryEntry.Name = entryName;
+
+                            if (_justPrintNames){
+                                Console.WriteLine("Dir: "+entryName);
+                            }
                         }
                         else if (entryNameLength != 0)
                         {
@@ -332,6 +336,10 @@ namespace Narchive.Formats
                             fileEntry.Name = entryName;
 
                             fileIndex++;
+
+                            if (_justPrintNames){
+                                Console.WriteLine(entryName);
+                            }
                         }
                         else
                         {
@@ -344,6 +352,9 @@ namespace Narchive.Formats
                             currentDirectory = directoryEntries[directoryIndex];
                         }
                     }
+                }
+                if (_justPrintNames){
+                    return;
                 }
 
                 // Read the FIMG section

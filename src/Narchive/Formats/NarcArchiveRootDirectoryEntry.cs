@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-
 namespace Narchive.Formats
 {
     public class NarcArchiveRootDirectoryEntry : NarcArchiveDirectoryEntry

@@ -23,6 +23,9 @@ namespace Narchive
         [Option("-nf | --nofilenames", "Ignores entry filenames and extracts using its index.", CommandOptionType.NoValue)]
         public bool IgnoreFilenames { get; set; }
 
+        [Option("-jp | --justprint", "Just print filenames.", CommandOptionType.NoValue)]
+        public bool justPrint { get; set; }
+
         private int OnExecute(IConsole console)
         {
             var reporter = new ConsoleReporter(console);
@@ -34,7 +37,7 @@ namespace Narchive
                     OutputPath = Environment.CurrentDirectory;
                 }
 
-                NarcArchive.Extract(InputPath, OutputPath, IgnoreFilenames);
+                NarcArchive.Extract(InputPath, OutputPath, IgnoreFilenames,justPrint);
 
                 return 0;
             }

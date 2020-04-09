@@ -31,9 +31,10 @@ namespace Narchive
         [Option("-nf | --nofilenames", "Specifies the entries in the NARC archive will not have filenames.", CommandOptionType.NoValue)]
         public bool NoFilenames { get; set; }
 
+        public const char fakeSeparator='|';
 
         private string getFakePath(string _passedPath){
-        	int _possibleIndex = _passedPath.IndexOf(':');
+        	int _possibleIndex = _passedPath.IndexOf(fakeSeparator);
         	if (_possibleIndex==-1){
         		return _passedPath;
         	}else{
@@ -41,7 +42,7 @@ namespace Narchive
         	}
         }
         private string getRealPath(string _passedPath){
-        	int _possibleIndex = _passedPath.IndexOf(':');
+        	int _possibleIndex = _passedPath.IndexOf(fakeSeparator);
         	if (_possibleIndex==-1){
         		return _passedPath;
         	}else{
